@@ -7,6 +7,7 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
 import xyz.wagyourtail.jsmacros.client.api.classes.render.IDraw2D;
 
@@ -214,7 +215,7 @@ public class Rect implements RenderElement, Alignable<Rect> {
      * @since 1.0.5
      */
     public Rect setColor(int color) {
-        if (color <= 0xFFFFFF) {
+        if (color <= 0xFFFFFFFF) {
             color = color | 0xFF000000;
         }
         this.color = color;
@@ -228,7 +229,7 @@ public class Rect implements RenderElement, Alignable<Rect> {
      * @since 1.1.8
      */
     public Rect setColor(int color, int alpha) {
-        this.color = (alpha << 24) | (color & 0xFFFFFF);
+        this.color = (alpha << 24) | (color & 0xFFFFFFFF);
         return this;
     }
 
@@ -238,7 +239,7 @@ public class Rect implements RenderElement, Alignable<Rect> {
      * @since 1.1.8
      */
     public Rect setAlpha(int alpha) {
-        this.color = (color & 0xFFFFFF) | (alpha << 24);
+        this.color = (color & 0xFFFFFFFF) | (alpha << 24);
         return this;
     }
 
@@ -312,7 +313,34 @@ public class Rect implements RenderElement, Alignable<Rect> {
 
     @Override
     public void render(DrawContext drawContext, int mouseX, int mouseY, float delta) {
-        // TODO: I cba to update rendering code
+        Matrix3x2fStack matrices = drawContext.getMatrices();
+
+        matrices.pushMatrix();
+        try {
+            int left = Math.min(x1, x2);
+            int top = Math.min(y1, y2);
+            int right = Math.max(x1, x2);
+            int bottom = Math.max(y1, y2);
+
+            if (this.rotation != 0) {
+                if (this.rotateCenter) {
+                    matrices.translate(left + getWidth() / 2f, top + getHeight() / 2f);
+                } else {
+                    matrices.translate(left, top);
+                }
+
+                matrices.rotate((float) Math.toRadians(this.rotation));
+                if (this.rotateCenter) {
+                    matrices.translate(-(left + getWidth() / 2f), -(top + getHeight() / 2f));
+                } else {
+                    matrices.translate(-left, -top);
+                }
+            }
+            drawContext.fill(left, top, right, bottom, this.color);
+
+        } finally {
+            matrices.popMatrix();
+        }
     }
 
     public Rect setParent(IDraw2D<?> parent) {
@@ -364,7 +392,7 @@ public class Rect implements RenderElement, Alignable<Rect> {
         private int y1 = 0;
         private int x2 = 0;
         private int y2 = 0;
-        private int color = 0xFFFFFF;
+        private int color = 0xFFFFFFFF;
         private int alpha = 0xFF;
         private float rotation = 0;
         private boolean rotateCenter = true;

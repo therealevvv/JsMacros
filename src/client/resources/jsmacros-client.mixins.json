@@ -74,7 +74,9 @@
     "events.MixinMouse",
     "events.MixinSoundSystem",
     "events.MixinSplashOverlay",
-    "access.MixinBlockPredicatesChecker"
+    "access.MixinBlockPredicatesChecker",
+    "access.MixinInGameHud",
+    "events.MixinWorldRenderer"
   ],
   "injectors": {
     "defaultRequire": 1

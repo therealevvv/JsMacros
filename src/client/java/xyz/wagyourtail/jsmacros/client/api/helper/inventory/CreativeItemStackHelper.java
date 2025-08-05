@@ -4,7 +4,7 @@ import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.*;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.BlockPredicatesChecker;
+import net.minecraft.component.type.BlockPredicatesComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
